@@ -7,7 +7,7 @@ import { io } from 'socket.io-client';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectHost } from './features/user/userSlice';
 import ProtectedRoute from './components/ProtectedRoute';
-const socket = io('http://localhost:8000');
+const socket = io('https://messaging-388520.df.r.appspot.com');
 function App() {
   const user = useSelector(selectHost);
   const dispatch = useDispatch();
