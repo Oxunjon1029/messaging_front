@@ -25,9 +25,6 @@ const MessageStarter = ({ socket }) => {
         dispatch(setUsers(data));
       }
     });
-    return () => {
-      socket.off('get_allUsers');
-    };
   }, [socket, dispatch, navigator]);
   return (
     <Box

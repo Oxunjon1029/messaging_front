@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
-  Autocomplete,
   TextField,
   AppBar,
   Toolbar,
@@ -10,44 +9,61 @@ import {
   Typography,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import ClearIcon from '@mui/icons-material/Clear';
 import { Field, Form, Formik } from 'formik';
 import * as yup from 'yup';
 import TextFormField from '../components/TextFormField';
 import Messages from '../components/Messages';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAuthor, selectUsers } from '../features/user/userSlice';
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
+const filter = createFilterOptions();
 
 const MessageSender = ({ socket, messages, setMessages }) => {
-  const [reciepient, setReciepient] = useState('');
   const dispatch = useDispatch();
   const users = useSelector(selectUsers);
   const author = useSelector(selectAuthor);
+
   const validationSchema = yup.object({
     title: yup.string().required(),
     message: yup.string().required(),
   });
-
+  let newFilteredUsers = [...new Set(users)];
+  const [inputValue, setInputValue] = useState('');
+  const [options, setOptions] = useState(newFilteredUsers);
   const handleSubmit = async (values) => {
     await socket.emit('send_message', {
       author: author,
-      reciepient: reciepient,
-      ...values,
+      title: values.title,
+      message: values.message,
+      reciepient:
+        values.reciepient === inputValue ? values.reciepient : inputValue,
       room: 'chattingRoom',
     });
   };
-  const onAutoCompleteChange = (value) => {
-    setReciepient(value?.name);
-  };
+
   useEffect(() => {
-    socket.on('recieve_messsage', (data) => {
+    socket.on('recieve_message', (data) => {
       if (data) {
         setMessages((prev) => [...prev, data]);
       }
     });
-   
   }, [socket, setMessages, dispatch]);
 
-  let newFilteredUsers = [...new Set(users)];
+  const handleInputChange = (event, newInputValue) => {
+    setInputValue(newInputValue);
+  };
+
+  const handleValueChange = (event, newValue) => {
+    setInputValue(newValue);
+  };
+
+  const handleBlur = () => {
+    const existingOption = options.find((option) => option.name === inputValue);
+    if (!existingOption && inputValue) {
+      setOptions((prev) => [...prev, { name: inputValue }]);
+    }
+  };
   return (
     <Box
       sx={{
@@ -88,29 +104,62 @@ const MessageSender = ({ socket, messages, setMessages }) => {
         }}>
         <Box sx={{ flex: '1' }}>
           <Formik
-            initialValues={{ title: '', message: '' }}
+            initialValues={{ title: '', message: '', reciepient: '' }}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}>
-            {() => (
+            {({ values, setFieldValue }) => (
               <Form>
-                <Autocomplete
-                  disablePortal
-                  id='combo-box-demo'
-                  onChange={(e, value) => onAutoCompleteChange(value)}
-                  options={newFilteredUsers}
-                  fullWidth
-                  getOptionLabel={(option) => option?.name}
-                  isOptionEqualToValue={(option, value) =>
-                    option.name === value
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      label='Chat to...'
-                      {...params}
-                      inputProps={{ ...params.inputProps }}
+                <Field name='reciepient'>
+                  {({ field }) => (
+                    <Autocomplete
+                      options={options}
+                      getOptionLabel={(option) => {
+                        if (typeof option === 'string') {
+                          return option;
+                        }
+                        if (option.inputValue) {
+                          return option.inputValue;
+                        }
+                        return option.name;
+                      }}
+                      filterOptions={(options, params) => {
+                        const filtered = filter(options, params);
+
+                        const { inputValue } = params;
+                        const isExisting = options.some(
+                          (option) => inputValue === option.name
+                        );
+                        if (inputValue !== '' && !isExisting) {
+                          filtered.push({
+                            inputValue,
+                            title: `Add "${inputValue}"`,
+                          });
+                        }
+
+                        return filtered;
+                      }}
+                      freeSolo
+                      selectOnFocus
+                      clearOnBlur
+                      inputValue={inputValue}
+                      onInputChange={handleInputChange}
+                      onChange={handleValueChange}
+                      onBlur={handleBlur}
+                      clearIcon={<ClearIcon style={{ display: 'none' }} />}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label='Chat to...'
+                          value={values.reciepient}
+                          onChange={(event) => {
+                            setFieldValue(field.name, event.target.value);
+                            setInputValue(event.target.value);
+                          }}
+                        />
+                      )}
                     />
                   )}
-                />
+                </Field>
                 <Field
                   label='Title'
                   placeholder='Enter title..'
