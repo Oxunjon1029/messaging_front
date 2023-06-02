@@ -32,6 +32,7 @@ const MessageSender = ({ socket, messages, setMessages }) => {
       author: author,
       reciepient: reciepient,
       ...values,
+      room: 'chattingRoom',
     });
   };
   const onAutoCompleteChange = (value) => {
