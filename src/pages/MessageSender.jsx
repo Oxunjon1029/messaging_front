@@ -96,8 +96,8 @@ const MessageSender = ({ socket, messages, setMessages }) => {
                   disablePortal
                   id='combo-box-demo'
                   onChange={(e, value) => onAutoCompleteChange(value)}
-                  onInputChange={(e, value) => setReciepient(value)}
                   options={newFilteredUsers}
+                  inputValue={receipient}
                   fullWidth
                   getOptionLabel={(option) => option?.name}
                   isOptionEqualToValue={(option, value) =>
@@ -106,6 +106,8 @@ const MessageSender = ({ socket, messages, setMessages }) => {
                   renderInput={(params) => (
                     <TextField
                       label='Chat to...'
+                      value={receipient}
+                      onChange={({ target }) => setReciepient(target.value)}
                       {...params}
                       inputProps={{ ...params.inputProps }}
                     />
