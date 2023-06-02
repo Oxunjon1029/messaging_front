@@ -53,7 +53,7 @@ const MessageSender = ({ socket, messages, setMessages }) => {
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
-        height:"100%",
+        height: '100%',
       }}>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position='static'>
@@ -79,9 +79,9 @@ const MessageSender = ({ socket, messages, setMessages }) => {
       <Box
         sx={{
           display: 'flex',
-          width:"100%",
-          height:"100%",
-          alignItems: 'center', 
+          width: '100%',
+          height: '100%',
+          alignItems: 'center',
           padding: '0 20px',
           gap: '20px',
         }}>
@@ -105,6 +105,8 @@ const MessageSender = ({ socket, messages, setMessages }) => {
                   renderInput={(params) => (
                     <TextField
                       label='Chat to...'
+                      value={receipient}
+                      onChange={(e) => setReciepient(e.target.value)}
                       {...params}
                       inputProps={{ ...params.inputProps }}
                     />
