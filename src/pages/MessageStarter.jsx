@@ -36,7 +36,7 @@ const MessageStarter = ({ socket }) => {
         height: '100%',
       }}>
       <Formik
-        initialValues={{ name: '', room: 'chattingRoom' }}
+        initialValues={{ name: '' }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}>
         {() => (

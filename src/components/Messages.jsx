@@ -1,13 +1,20 @@
 import { Box, Paper, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { selectAuthor } from '../features/user/userSlice';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#1976D2',
   padding: theme.spacing(1),
   display: 'flex',
 }));
 const Messages = ({ messages }) => {
-  let newFilteredMessages = [...new Set(messages)];
+  let authorOrReciepient = useSelector(selectAuthor);
+  let newFilteredMessages = [
+    ...new Set(
+      messages.filter((message) => message.reciepient === authorOrReciepient)
+    ),
+  ];
   return (
     <Box
       sx={{
@@ -19,7 +26,6 @@ const Messages = ({ messages }) => {
         justifyContent: 'center',
         alignItems: 'center',
       }}>
-      
       <Box
         sx={{
           display: 'flex',
@@ -53,7 +59,7 @@ const Messages = ({ messages }) => {
                     <Typography>Title: {message?.title}</Typography>
                     <Typography>by {message?.author}</Typography>
                   </Box>
-                  <Box sx={{ textAlign: 'right',color:"white" }}>
+                  <Box sx={{ textAlign: 'right', color: 'white' }}>
                     <Typography
                       sx={{
                         fontWeight: '400',

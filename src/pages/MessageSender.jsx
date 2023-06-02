@@ -29,7 +29,6 @@ const MessageSender = ({ socket, messages, setMessages }) => {
 
   const handleSubmit = async (values) => {
     await socket.emit('send_message', {
-      room: 'chattingRoom',
       author: author,
       reciepient: reciepient,
       ...values,
