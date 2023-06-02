@@ -19,6 +19,9 @@ function App() {
         setMessages(data);
       }
     });
+    return () => {
+      socket.off('get_allMessages');
+    };
   }, [dispatch]);
 
   return (

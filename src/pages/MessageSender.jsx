@@ -43,6 +43,9 @@ const MessageSender = ({ socket, messages, setMessages }) => {
         setMessages((prev) => [...prev, data]);
       }
     });
+    return () => {
+      socket.off('recieve_messsage');
+    };
   }, [socket, setMessages, dispatch]);
 
   let newFilteredUsers = [...new Set(users)];
