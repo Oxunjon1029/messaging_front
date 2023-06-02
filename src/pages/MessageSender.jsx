@@ -70,7 +70,7 @@ const MessageSender = ({ socket, messages, setMessages }) => {
               variant='h6'
               noWrap
               component='div'
-              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}>
+              sx={{ flexGrow: 1, display: { sm: 'block' } }}>
               {author}
             </Typography>
           </Toolbar>
@@ -97,7 +97,6 @@ const MessageSender = ({ socket, messages, setMessages }) => {
                   id='combo-box-demo'
                   onChange={(e, value) => onAutoCompleteChange(value)}
                   options={newFilteredUsers}
-                  inputValue={receipient}
                   fullWidth
                   getOptionLabel={(option) => option?.name}
                   isOptionEqualToValue={(option, value) =>
@@ -106,8 +105,6 @@ const MessageSender = ({ socket, messages, setMessages }) => {
                   renderInput={(params) => (
                     <TextField
                       label='Chat to...'
-                      value={receipient}
-                      onChange={({ target }) => setReciepient(target.value)}
                       {...params}
                       inputProps={{ ...params.inputProps }}
                     />
